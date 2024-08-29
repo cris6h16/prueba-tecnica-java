@@ -2,7 +2,6 @@ package org.example.Application.Handlers;
 
 import org.example.Application.Commands.CreatePostCommand;
 import org.example.Application.DTOs.CreatePostDTO;
-import org.example.Application.Exceptions.Impls.NullCommandException;
 import org.example.Application.Services.Interfaces.PostApplicationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;

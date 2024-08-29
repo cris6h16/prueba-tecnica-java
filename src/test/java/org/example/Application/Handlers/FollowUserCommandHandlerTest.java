@@ -1,7 +1,6 @@
 package org.example.Application.Handlers;
 
 import org.example.Application.Commands.FollowUserCommand;
-import org.example.Application.Exceptions.Impls.NullCommandException;
 import org.example.Application.Services.Interfaces.UserApplicationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
