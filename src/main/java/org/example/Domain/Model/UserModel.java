@@ -11,6 +11,7 @@ public class UserModel {
     private Set<PostModel> posts; // bidireccional
     private Set<UserModel> following;
 
+    // todo: impl builder
     public UserModel(String id, String username, Set<PostModel> posts, Set<UserModel> following) {
         this.setId(id);
         this.setUsername(username);

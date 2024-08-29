@@ -17,6 +17,7 @@ public class PostModel {
     private PostModel() {
     }
 
+    // pritextec debido a tests
     private PostModel(String id, String content, Long instant, UserModel user) {
         this.setId(id);
         this.setContent(content);
