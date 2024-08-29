@@ -37,7 +37,7 @@ class InMemoryPostRepositoryTest {
     void createAddsPostToRepository() {
         repository.create(post1);
         assertEquals(1, repository.posts.size());
-        assertEquals(post1, repository.posts.get("post1"));
+        assertEquals(post1, repository.posts.get(post1.getId()));
     }
 
     @Test

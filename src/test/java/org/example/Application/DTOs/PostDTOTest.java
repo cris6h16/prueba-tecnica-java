@@ -32,6 +32,19 @@ class PostDTOTest {
     }
 
     @Test
+    void noArgsConstructor() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        Constructor<PostDTO>[] cs = (Constructor<PostDTO>[]) PostDTO.class.getDeclaredConstructors();
+
+        for (Constructor<PostDTO> c : cs) {
+            if (c.getParameterCount() == 0) {
+                c.setAccessible(true);
+                PostDTO dto = c.newInstance();
+                assertNotNull(dto);
+            }
+        }
+    }
+
+    @Test
     void builder() {
         PostDTO postDTO = new PostDTO.Builder()
                 .setId("1")

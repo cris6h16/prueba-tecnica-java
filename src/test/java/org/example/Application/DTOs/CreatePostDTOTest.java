@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CreatePostDTOTest {
 
     @Test
-    void constructorsArePrivate()  {
+    void constructorsArePrivate() {
         Constructor<CreatePostDTO>[] cs = (Constructor<CreatePostDTO>[]) CreatePostDTO.class.getDeclaredConstructors();
         for (Constructor<CreatePostDTO> c : cs) {
             assertFalse(c.canAccess(null));
@@ -26,6 +26,19 @@ class CreatePostDTOTest {
             CreatePostDTO dto = c.newInstance("Test content.0", "cris6h16");
             assertEquals("Test content.0", dto.getContent());
             assertEquals("cris6h16", dto.getUserUsername());
+        }
+    }
+
+    @Test
+    void noArgsConstructor() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        Constructor<CreatePostDTO>[] cs = (Constructor<CreatePostDTO>[]) CreatePostDTO.class.getDeclaredConstructors();
+
+        for (Constructor<CreatePostDTO> c : cs) {
+            if (c.getParameterCount() == 0) {
+                c.setAccessible(true);
+                CreatePostDTO dto = c.newInstance();
+                assertNotNull(dto);
+            }
         }
     }
 

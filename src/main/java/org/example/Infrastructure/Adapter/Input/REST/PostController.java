@@ -3,7 +3,9 @@ package org.example.Infrastructure.Adapter.Input.REST;
 import org.example.Application.Commands.CreatePostCommand;
 import org.example.Application.DTOs.CreatePostDTO;
 import org.example.Application.Exceptions.Impls.UserNotFoundException;
+import org.example.Application.Exceptions.Impls.UsernameIsNullOrBlankException;
 import org.example.Application.Handlers.CreatePostCommandHandler;
+import org.example.Infrastructure.Adapter.Input.REST.DTOs.CreatePostRequest;
 import org.example.Infrastructure.Exceptions.REST.MyResponseStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +27,11 @@ public class PostController {
             value = "/create",
             consumes = "application/json"
     )
-    public ResponseEntity<Void> create(@RequestBody String username, @RequestBody String content) {
+    public ResponseEntity<Void> create(@RequestBody CreatePostRequest request) {
         try {
             CreatePostCommand cpcmd = new CreatePostCommand(new CreatePostDTO.Builder()
-                    .userUsername(username)
-                    .content(content)
+                    .userUsername(request.getUsername())
+                    .content(request.getContent())
                     .build()
             );
             createPostCommandHandler.handle(cpcmd);
@@ -37,6 +39,8 @@ public class PostController {
 
         } catch (UserNotFoundException e) {
             throw new MyResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UsernameIsNullOrBlankException e) {
+            throw new MyResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

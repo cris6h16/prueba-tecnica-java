@@ -3,6 +3,7 @@ package org.example.Infrastructure.Adapter.Output;
 import org.example.Domain.Model.PostModel;
 import org.example.Domain.Repositories.PostDomainRepository;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class InMemoryPostRepository implements PostDomainRepository {
 
     @Override
     public void create(PostModel post) {
+        post.setId(String.valueOf(posts.size() + 1));
         posts.put(post.getId(), post);
     }
 

@@ -44,6 +44,19 @@ class PostModelTest {
     }
 
     @Test
+    void noArgsConstructor() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        Constructor<PostModel>[] cs = (Constructor<PostModel>[]) PostModel.class.getDeclaredConstructors();
+
+        for (Constructor<PostModel> c : cs) {
+            if (c.getParameterCount() == 0) {
+                c.setAccessible(true);
+                PostModel model = c.newInstance();
+                assertNotNull(model);
+            }
+        }
+    }
+
+    @Test
     public void builderAndGetters() {
         UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()

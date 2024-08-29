@@ -44,6 +44,19 @@ class UserDTOTest {
     }
 
     @Test
+    void noArgsConstructor() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        Constructor<UserDTO>[] cs = (Constructor<UserDTO>[]) UserDTO.class.getDeclaredConstructors();
+
+        for (Constructor<UserDTO> c : cs) {
+            if (c.getParameterCount() == 0) {
+                c.setAccessible(true);
+                UserDTO userDTO = c.newInstance();
+                assertNotNull(userDTO);
+            }
+        }
+    }
+
+    @Test
     void builderCreatesProperObject() {
         Set<PostDTO> posts = new HashSet<>();
         Set<UserDTO> following = new HashSet<>();

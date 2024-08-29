@@ -7,9 +7,11 @@ import org.example.Application.DTOs.PostDTO;
 import org.example.Application.DTOs.UserDTO;
 import org.example.Application.Exceptions.Impls.AlreadyFollowingException;
 import org.example.Application.Exceptions.Impls.UserNotFoundException;
+import org.example.Application.Exceptions.Impls.UsernameIsNullOrBlankException;
 import org.example.Application.Handlers.FindByUsernameCommandHandler;
 import org.example.Application.Handlers.FindByUsernameFollowingEagerCommandHandler;
 import org.example.Application.Handlers.FollowUserCommandHandler;
+import org.example.Infrastructure.Adapter.Input.REST.DTOs.FollowUserRequest;
 import org.example.Infrastructure.Exceptions.REST.MyResponseStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,10 +39,9 @@ public class UserController {
             value = "/follow",
             consumes = "application/json"
     )
-    public ResponseEntity<Void> follow(@RequestBody String followerUsername,
-                                       @RequestBody String followedUsername) {
+    public ResponseEntity<Void> follow(@RequestBody FollowUserRequest request) {
         try {
-            FollowUserCommand fcmd = new FollowUserCommand(followerUsername, followedUsername);
+            FollowUserCommand fcmd = new FollowUserCommand(request.getFollowerUsername(), request.getFollowedUsername());
             followUserCommandHandler.handle(fcmd);
             return ResponseEntity.ok().build();
 
@@ -48,6 +49,8 @@ public class UserController {
             throw new MyResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (UserNotFoundException e) {
             throw new MyResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UsernameIsNullOrBlankException e) {
+            throw new MyResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -68,6 +71,8 @@ public class UserController {
 
         } catch (UserNotFoundException e) {
             throw new MyResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UsernameIsNullOrBlankException e) {
+            throw new MyResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -84,6 +89,8 @@ public class UserController {
 
         } catch (UserNotFoundException e) {
             throw new MyResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UsernameIsNullOrBlankException e) {
+            throw new MyResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 

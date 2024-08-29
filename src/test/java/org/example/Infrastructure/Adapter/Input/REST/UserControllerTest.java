@@ -8,16 +8,17 @@ import org.example.Application.DTOs.PostDTO;
 import org.example.Application.DTOs.UserDTO;
 import org.example.Application.Exceptions.Impls.AlreadyFollowingException;
 import org.example.Application.Exceptions.Impls.UserNotFoundException;
+import org.example.Application.Exceptions.Impls.UsernameIsNullOrBlankException;
 import org.example.Application.Handlers.FindByUsernameCommandHandler;
 import org.example.Application.Handlers.FindByUsernameFollowingEagerCommandHandler;
 import org.example.Application.Handlers.FollowUserCommandHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,14 +41,15 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private FollowUserCommandHandler followUserCommandHandler;
 
-    @Mock
+    @MockBean
     private FindByUsernameCommandHandler findByUsernameCommandHandler;
 
-    @Mock
+    @MockBean
     private FindByUsernameFollowingEagerCommandHandler findByUsernameFollowingEagerCommandHandler;
+
 
     @InjectMocks
     private UserController userController;
@@ -69,45 +71,59 @@ public class UserControllerTest {
         // Act & Assert
         mockMvc.perform(post("/api/v1/users/follow")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(followerUsername)))
+                        .content("{\"followerUsername\": \"" + followerUsername + "\", \"followedUsername\": \"" + followedUsername + "\"}"))
                 .andExpect(status().isOk());
 
         verify(followUserCommandHandler, times(1)).handle(any(FollowUserCommand.class));
     }
 
     @Test
-    void FollowUserNotFound() throws Exception {
+    void Follow_UserNotFoundException() throws Exception {
         // Arrange
-        String followerUsername = "cris6h16";
-        String followedUsername = "helloWorld";
-        doThrow(new UserNotFoundException(followerUsername)).when(followUserCommandHandler).handle(any(FollowUserCommand.class));
+        doThrow(new UserNotFoundException("cris6h16")).when(followUserCommandHandler).handle(any(FollowUserCommand.class));
 
         // Act & Assert
         mockMvc.perform(post("/api/v1/users/follow")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"followerUsername\": \"" + followerUsername + "\", \"followedUsername\": \"" + followedUsername + "\"}"))
+                        .content("{}"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath("$.message").value("No se encontró ningún usuario @" + followerUsername));
+                .andExpect(jsonPath("$.message").value("No se encontró ningún usuario @cris6h16"));
 
         verify(followUserCommandHandler, times(1)).handle(any(FollowUserCommand.class));
     }
 
+
     @Test
-    void FollowAlreadyFollowing() throws Exception {
+    void Follow_AlreadyFollowingException() throws Exception {
         // Arrange
-        String followerUsername = "cris6h16";
-        String followedUsername = "cristianHerrera";
-        doThrow(new AlreadyFollowingException(followerUsername, followedUsername))
+        doThrow(new AlreadyFollowingException("n1","n2"))
                 .when(followUserCommandHandler).handle(any(FollowUserCommand.class));
 
         // Act & Assert
         mockMvc.perform(post("/api/v1/users/follow")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(followerUsername)))
+                        .content("{}"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value(HttpStatus.CONFLICT.value()))
-                .andExpect(jsonPath("$.message").value(followerUsername + " ya está siguiendo a @" + followedUsername));
+                .andExpect(jsonPath("$.message").value( "n1 ya está siguiendo a @n2" ));
+
+        verify(followUserCommandHandler, times(1)).handle(any(FollowUserCommand.class));
+    }
+
+    @Test
+    void Follow_UsernameIsNullOrBlankException() throws Exception {
+        // Arrange
+        doThrow(new UsernameIsNullOrBlankException())
+                .when(followUserCommandHandler).handle(any(FollowUserCommand.class));
+
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/users/follow")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.message").value("username no puede ser null o vacio"));
 
         verify(followUserCommandHandler, times(1)).handle(any(FollowUserCommand.class));
     }
@@ -124,16 +140,12 @@ public class UserControllerTest {
         when(findByUsernameFollowingEagerCommandHandler.handle(any(FindByUsernameFollowingEagerCommand.class)))
                 .thenReturn(userDTO);
 
-        Set<PostDTO> posts = userDTO.getFollowing().stream()
-                .flatMap(user -> user.getPosts().stream())
-                .collect(Collectors.toSet());
-
         // Act & Assert
         mockMvc.perform(get("/api/v1/users/dashboard")
                         .param("username", username))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[0].content").value("Post 1"))
-                .andExpect(jsonPath("$.[1].content").value("Post 2"));
+                .andExpect(jsonPath("$.[0].content").value("Post 2"))
+                .andExpect(jsonPath("$.[1].content").value("Post 1"));
 
         verify(findByUsernameFollowingEagerCommandHandler, times(1)).handle(any(FindByUsernameFollowingEagerCommand.class));
     }
@@ -151,7 +163,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void DashboardUserNotFound() throws Exception {
+    void Dashboard_UserNotFoundException() throws Exception {
         // Arrange
         String username = "helloWorld";
         doThrow(new UserNotFoundException(username)).when(findByUsernameFollowingEagerCommandHandler).handle(any(FindByUsernameFollowingEagerCommand.class));
@@ -163,6 +175,23 @@ public class UserControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.message").value("No se encontró ningún usuario @" + username));
+
+        verify(findByUsernameFollowingEagerCommandHandler, times(1)).handle(any(FindByUsernameFollowingEagerCommand.class));
+    }
+
+    @Test
+    void Dashboard_UsernameIsNullOrBlankException() throws Exception {
+        // Arrange
+        doThrow(new UsernameIsNullOrBlankException())
+                .when(findByUsernameFollowingEagerCommandHandler).handle(any(FindByUsernameFollowingEagerCommand.class));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/users/dashboard")
+                        .param("username", "")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.message").value("username no puede ser null o vacio"));
 
         verify(findByUsernameFollowingEagerCommandHandler, times(1)).handle(any(FindByUsernameFollowingEagerCommand.class));
     }
@@ -189,7 +218,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void WallUserNotFound() throws Exception {
+    void Wall_UserNotFoundException() throws Exception {
         // Arrange
         String username = "hellwoWorld";
         doThrow(new UserNotFoundException(username)).when(findByUsernameCommandHandler).handle(any(FindByUsernameCommand.class));
@@ -201,6 +230,24 @@ public class UserControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.message").value("No se encontró ningún usuario @" + username));
+
+        verify(findByUsernameCommandHandler, times(1)).handle(any(FindByUsernameCommand.class));
+    }
+    //UsernameIsNullOrBlankException
+
+    @Test
+    void Wall_UsernameIsNullOrBlankException() throws Exception {
+        // Arrange
+        doThrow(new UsernameIsNullOrBlankException())
+                .when(findByUsernameCommandHandler).handle(any(FindByUsernameCommand.class));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/users/wall")
+                        .param("username", "")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.message").value("username no puede ser null o vacio"));
 
         verify(findByUsernameCommandHandler, times(1)).handle(any(FindByUsernameCommand.class));
     }

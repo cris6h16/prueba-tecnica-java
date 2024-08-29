@@ -3,6 +3,8 @@ package org.example.Application.Services;
 import org.example.Application.DTOs.UserDTO;
 import org.example.Application.Exceptions.Impls.AlreadyFollowingException;
 import org.example.Application.Exceptions.Impls.UserNotFoundException;
+import org.example.Application.Exceptions.Impls.UsernameIsNullOrBlankException;
+import org.example.Domain.Model.PostModel;
 import org.example.Domain.Model.UserModel;
 import org.example.Domain.Repositories.UserDomainRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -82,15 +85,33 @@ class UserApplicationServiceImplTest {
 
         assertThrows(AlreadyFollowingException.class, () -> userService.follow("follower", "followed"));
     }
+    // follow usernames nulls
+    @Test
+    public void Follow_UsernameIsNullOrBlank() {
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(userModel));
+
+        assertThrows(UsernameIsNullOrBlankException.class, () -> userService.follow(null, "followed"));
+        assertThrows(UsernameIsNullOrBlankException.class, () -> userService.follow("", "followed"));
+        assertThrows(UsernameIsNullOrBlankException.class, () -> userService.follow("follower", null));
+        assertThrows(UsernameIsNullOrBlankException.class, () -> userService.follow("follower", "  "));
+    }
 
     @Test
     public void FindByUsername_Success() {
+        PostModel p = new PostModel.Builder()
+                .setId("1")
+                .setContent("content")
+                .setInstant(123456789L)
+                .setUser(userModel)
+                .build(); // lo hago para alcanzar el 100 de test coverage
+        userModel.getPosts().add(p);
         when(userRepository.findByUsername("cris6h16")).thenReturn(Optional.of(userModel));
 
         UserDTO result = userService.findByUsername("cris6h16");
 
         assertEquals(userDTO.getId(), result.getId());
         assertEquals(userDTO.getUsername(), result.getUsername());
+        assertEquals(userModel.getPosts().size(), result.getPosts().size()); // solo comparo el tamano para ahorrarme el tiempo de implemetar de `toDto` para poder comparar
     }
 
     @Test

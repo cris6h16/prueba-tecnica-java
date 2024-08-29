@@ -2,6 +2,7 @@ package org.example.Infrastructure.Adapter.Input.REST;
 
 import org.example.Application.Commands.CreatePostCommand;
 import org.example.Application.Exceptions.Impls.UserNotFoundException;
+import org.example.Application.Exceptions.Impls.UsernameIsNullOrBlankException;
 import org.example.Application.Handlers.CreatePostCommandHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,7 +28,7 @@ public class PostControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private CreatePostCommandHandler createPostCommandHandler;
 
     @InjectMocks
@@ -53,21 +55,35 @@ public class PostControllerTest {
     }
 
     @Test
-    void testCreatePostUserNotFound() throws Exception {
+    void create_UserNotFoundException() throws Exception {
         // Arrange
-        String username = "github.com/cris6h16";
-        String content = "Test post content";
         doThrow(new UserNotFoundException("cris6h16")).when(createPostCommandHandler).handle(any(CreatePostCommand.class));
 
         // Act & Assert
         mockMvc.perform(post("/api/v1/posts/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"" + username + "\", \"content\": \"" + content + "\"}"))
+                        .content("{}"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath("$.content").value("No se encontró ningún usuario @cris6h16")
+                .andExpect(jsonPath("$.message").value("No se encontró ningún usuario @cris6h16")
                 );
 
         verify(createPostCommandHandler, times(1)).handle(any(CreatePostCommand.class));
+    }
+    //UsernameIsNullOrBlankException
+
+    @Test
+    void create_UsernameIsNullOrBlankException() throws Exception {
+        // Arrange
+        doThrow(new UsernameIsNullOrBlankException()).when(createPostCommandHandler).handle(any(CreatePostCommand.class));
+
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/posts/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.message").value("username no puede ser null o vacio")
+                );
     }
 }

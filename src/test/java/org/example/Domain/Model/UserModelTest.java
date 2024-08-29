@@ -45,6 +45,19 @@ class UserModelTest {
     }
 
     @Test
+    void noArgsConstructor() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        Constructor<UserModel>[] cs = (Constructor<UserModel>[]) UserModel.class.getDeclaredConstructors();
+
+        for (Constructor<UserModel> c : cs) {
+            if (c.getParameterCount() == 0) {
+                c.setAccessible(true);
+                UserModel model = c.newInstance();
+                assertNotNull(model);
+            }
+        }
+    }
+
+    @Test
     public void setId_Valid() {
         UserModel user = createValidUserModel("1", "cris6h16");
         user.setId("  2  ");
@@ -71,20 +84,23 @@ class UserModelTest {
         user.setUsername("  newUsername  ");
         assertEquals("newUsername", user.getUsername());
     }
-
     @ParameterizedTest
     @ValueSource(strings = {"null", "empty", "blank"})
     public void setUsername_Invalid(String username) {
-        username = switch (username) {
-            case "null" -> null;
-            case "empty" -> "";
-            case "blank" -> "   ";
-            default -> username;
-        };
-        String finalUsername = username;
+        String finalUsername = convertSpecialString(username);
         UserModel user = createValidUserModel("1", "cris6h16");
         assertThrows(UserModelException.class, () -> user.setUsername(finalUsername));
     }
+
+    private String convertSpecialString(String input) {
+        return switch (input) {
+            case "null" -> null;
+            case "empty" -> "";
+            case "blank" -> "   ";
+            default -> input;
+        };
+    }
+
 
     @Test
     public void setPosts_Valid() {

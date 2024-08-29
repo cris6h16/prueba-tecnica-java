@@ -4,6 +4,7 @@ import org.example.Application.DTOs.PostDTO;
 import org.example.Application.DTOs.UserDTO;
 import org.example.Application.Exceptions.Impls.AlreadyFollowingException;
 import org.example.Application.Exceptions.Impls.UserNotFoundException;
+import org.example.Application.Exceptions.Impls.UsernameIsNullOrBlankException;
 import org.example.Application.Services.Interfaces.UserApplicationService;
 import org.example.Domain.Model.UserModel;
 import org.example.Domain.Repositories.UserDomainRepository;
@@ -63,6 +64,9 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     }
 
     private void existsUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new UsernameIsNullOrBlankException();
+        }
         userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
     }

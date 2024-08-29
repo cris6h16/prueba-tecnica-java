@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Beans {
+
     @Bean
     public FollowUserCommandHandler followUserCommandHandler(UserApplicationService service) {
         return new FollowUserCommandHandler(service);
@@ -35,6 +36,7 @@ public class Beans {
     public CreatePostCommandHandler createPostCommandHandler(PostApplicationService service) {
         return new CreatePostCommandHandler(service);
     }
+
 
     @Bean
     public UserApplicationService userApplicationService(UserDomainRepository repo) {
