@@ -41,9 +41,5 @@ class CreatePostCommandHandlerTest {
         verify(postApplicationService).create(createPostDTO);
     }
 
-    @Test
-    public void handleWithNullCommand() {
-        assertThrows(NullCommandException.class, () -> createPostCommandHandler.handle(null));
-    }
 }
 

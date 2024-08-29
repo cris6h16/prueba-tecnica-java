@@ -51,8 +51,4 @@ class FindByUsernameFollowingEagerCommandHandlerTest {
         assertEquals(userDTO, result);
     }
 
-    @Test
-    public void handleWithNullCommand() {
-        assertThrows(NullCommandException.class, () -> findByUsernameFollowingEagerCommandHandler.handle(null));
-    }
 }

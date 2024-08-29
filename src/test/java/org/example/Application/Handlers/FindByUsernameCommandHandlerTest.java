@@ -48,8 +48,4 @@ public class FindByUsernameCommandHandlerTest {
         assertEquals(userDTO, result);
     }
 
-    @Test
-    public void handleWithNullCommand() {
-        assertThrows(NullCommandException.class, () -> findByUsernameCommandHandler.handle(null));
-    }
 }

@@ -85,9 +85,9 @@ class UserApplicationServiceImplTest {
 
     @Test
     public void FindByUsername_Success() {
-        when(userRepository.findByUsername("username")).thenReturn(Optional.of(userModel));
+        when(userRepository.findByUsername("cris6h16")).thenReturn(Optional.of(userModel));
 
-        UserDTO result = userService.findByUsername("username");
+        UserDTO result = userService.findByUsername("cris6h16");
 
         assertEquals(userDTO.getId(), result.getId());
         assertEquals(userDTO.getUsername(), result.getUsername());
@@ -95,16 +95,17 @@ class UserApplicationServiceImplTest {
 
     @Test
     public void FindByUsername_UserNotFound() {
-        when(userRepository.findByUsername("username")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername("cris6h16")).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.findByUsername("username"));
+        assertThrows(UserNotFoundException.class, () -> userService.findByUsername("cris6h16"));
     }
 
     @Test
     public void FindByUsernameFollowingEager_Success() {
-        when(userRepository.findByUsernameFollowingEager("username")).thenReturn(Optional.of(userModel));
+        when(userRepository.findByUsername("cris6h16")).thenReturn(Optional.of(userModel));
+        when(userRepository.findByUsernameFollowingEager("cris6h16")).thenReturn(Optional.of(userModel));
 
-        UserDTO result = userService.findByUsernameFollowingEager("username");
+        UserDTO result = userService.findByUsernameFollowingEager("cris6h16");
 
         assertEquals(userDTO.getId(), result.getId());
         assertEquals(userDTO.getUsername(), result.getUsername());
@@ -112,9 +113,9 @@ class UserApplicationServiceImplTest {
 
     @Test
     public void FindByUsernameFollowingEager_UserNotFound() {
-        when(userRepository.findByUsernameFollowingEager("username")).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameFollowingEager("cris6h16")).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.findByUsernameFollowingEager("username"));
+        assertThrows(UserNotFoundException.class, () -> userService.findByUsernameFollowingEager("cris6h16"));
     }
 
 }

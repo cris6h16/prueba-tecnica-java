@@ -12,13 +12,19 @@ public class CustomExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(CustomExceptionHandler.class);
 
     @ExceptionHandler(MyResponseStatusException.class)
-    public ResponseEntity<String> handleResponseStatusException(MyResponseStatusException e) {
-        return ResponseEntity.status(e.getStatus()).body(e.getResponse());
+    public ResponseEntity<ErrorResponse> handleResponseStatusException(MyResponseStatusException e) {
+        return ResponseEntity.status(e.getStatus()).body(
+                new ErrorResponse(String.valueOf(e.getStatus().value()), e.getMessage())
+        );
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("Error inesperado:" + e.toString());
-        return ResponseEntity.status(500).body("Ocurrío un error inesperado");
+        return ResponseEntity.status(500).body(new ErrorResponse("500", "Error inesperado"));
+    }
+
+
+    public record ErrorResponse(String status, String message) {
     }
 }

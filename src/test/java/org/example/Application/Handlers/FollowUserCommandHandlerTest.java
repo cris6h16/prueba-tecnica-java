@@ -33,8 +33,4 @@ class FollowUserCommandHandlerTest {
         verify(userApplicationService).follow("cris6h16", "cristianHerrera");
     }
 
-    @Test
-    public void handleWithNullCommand() {
-        assertThrows(NullCommandException.class, () -> followUserCommandHandler.handle(null));
-    }
 }

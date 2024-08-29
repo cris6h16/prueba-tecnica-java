@@ -68,6 +68,14 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- suites -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>1.11.0-M1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
