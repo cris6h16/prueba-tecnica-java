@@ -2,6 +2,7 @@ package org.example.Application.Handlers;
 
 import org.example.Application.Commands.FindByUsernameFollowingEagerCommand;
 import org.example.Application.DTOs.UserDTO;
+import org.example.Application.Exceptions.Impls.NullCommandException;
 import org.example.Application.Services.Interfaces.UserApplicationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,21 +34,26 @@ class FindByUsernameFollowingEagerCommandHandlerTest {
 
         userDTO = new UserDTO.Builder()
                 .setId("1")
-                .setUsername("username")
+                .setUsername("cris6h16")
                 .setFollowing(new HashSet<>())
                 .setPosts(new HashSet<>())
                 .build();
 
-        findByUsernameFollowingEagerCommand = new FindByUsernameFollowingEagerCommand("username");
+        findByUsernameFollowingEagerCommand = new FindByUsernameFollowingEagerCommand("cris6h16");
     }
 
     @Test
-    public void testHandle() {
-        when(userApplicationService.findByUsernameFollowingEager("username")).thenReturn(userDTO);
+    public void handle() {
+        when(userApplicationService.findByUsernameFollowingEager("cris6h16")).thenReturn(userDTO);
 
         UserDTO result = findByUsernameFollowingEagerCommandHandler.handle(findByUsernameFollowingEagerCommand);
 
-        verify(userApplicationService).findByUsernameFollowingEager("username");
+        verify(userApplicationService).findByUsernameFollowingEager("cris6h16");
         assertEquals(userDTO, result);
+    }
+
+    @Test
+    public void handleWithNullCommand() {
+        assertThrows(NullCommandException.class, () -> findByUsernameFollowingEagerCommandHandler.handle(null));
     }
 }

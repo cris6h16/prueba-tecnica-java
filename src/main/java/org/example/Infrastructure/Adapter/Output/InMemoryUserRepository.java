@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.Optional;
 
 public class InMemoryUserRepository implements UserDomainRepository {
-    private final Map<String, UserModel> users;
+    protected final Map<String, UserModel> users;
 
     public InMemoryUserRepository() {
         users = new HashMap<>();
-        users.put("Alfonso", new UserModel("1", "Alfonso", new HashSet<>(), new HashSet<>()));
-        users.put("Ivan", new UserModel("2", "Ivan", new HashSet<>(), new HashSet<>()));
-        users.put("Alicia", new UserModel("3", "Alicia", new HashSet<>(), new HashSet<>()));
+        users.put("Alfonso", createValidUserModel("1", "Alfonso"));
+        users.put("Ivan", createValidUserModel("2", "Ivan"));
+        users.put("Alicia", createValidUserModel("3", "Alicia"));
     }
 
     @Override
@@ -37,5 +37,15 @@ public class InMemoryUserRepository implements UserDomainRepository {
     public Optional<UserModel> findByUsernameFollowingEager(String username) {
         UserModel user = users.get(username);
         return Optional.ofNullable(user);
+    }
+
+
+    private UserModel createValidUserModel(String id, String username) {
+        return new UserModel.Builder()
+                .setId(id)
+                .setUsername(username)
+                .setPosts(new HashSet<>())
+                .setFollowing(new HashSet<>())
+                .build();
     }
 }

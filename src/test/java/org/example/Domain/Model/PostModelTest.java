@@ -1,5 +1,6 @@
 package org.example.Domain.Model;
 
+import org.example.Application.DTOs.CreatePostDTO;
 import org.example.Domain.Exceptions.Impls.PostModelException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -7,18 +8,44 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tags({@Tag("Domain"), @Tag("UnitTest")})
 class PostModelTest {
 
 
     @Test
+    void constructorsArePrivate() {
+        Constructor<PostModel>[] cs = (Constructor<PostModel>[]) CreatePostDTO.class.getDeclaredConstructors();
+        for (Constructor<PostModel> c : cs) {
+            assertFalse(c.canAccess(null));
+        }
+    }
+
+    @Test
+    void allArgsConstructorAndGetters() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        Constructor<PostModel>[] cs = (Constructor<PostModel>[]) PostModel.class.getDeclaredConstructors();
+        for (Constructor<PostModel> c : cs) {
+            if (c.getParameterCount() == 0) continue;
+            c.setAccessible(true);
+
+            UserModel user = createValidUserModel("1", "cris6h16");
+            PostModel mdoel = c.newInstance("100", "content", 123456789L, user);
+
+            assertEquals("100", mdoel.getId());
+            assertEquals("content", mdoel.getContent());
+            assertEquals(123456789L, mdoel.getInstant());
+            assertEquals(user, mdoel.getUser());
+        }
+    }
+
+    @Test
     public void builderAndGetters() {
-        UserModel user = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -34,7 +61,7 @@ class PostModelTest {
 
     @Test
     public void setId_Valid() {
-        UserModel user = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -49,7 +76,7 @@ class PostModelTest {
     @ParameterizedTest
     @ValueSource(strings = {"null", "blank", "empty"})
     public void setId_Invalid(String value) {
-        UserModel user = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -69,7 +96,7 @@ class PostModelTest {
 
     @Test
     public void setContent_Valid() {
-        UserModel user = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -84,7 +111,7 @@ class PostModelTest {
     @ParameterizedTest
     @ValueSource(strings = {"null", "blank", "empty"})
     public void setContent_Invalid(String value) {
-        UserModel user = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -104,7 +131,7 @@ class PostModelTest {
 
     @Test
     public void setInstant_Valid() {
-        UserModel user = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -119,7 +146,7 @@ class PostModelTest {
     @ParameterizedTest
     @ValueSource(strings = {"null", "negative"})
     public void setInstant_Invalid(String value) {
-        UserModel user = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -142,8 +169,8 @@ class PostModelTest {
 
     @Test
     public void setUser_Valid() {
-        UserModel user1 = new UserModel("1", "username1", new HashSet<>(), new HashSet<>());
-        UserModel user2 = new UserModel("2", "username2", new HashSet<>(), new HashSet<>());
+        UserModel user1 = createValidUserModel("1", "cris6h16");
+        UserModel user2 =  createValidUserModel("2", "cris6h16_2");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -157,7 +184,7 @@ class PostModelTest {
 
     @Test
     public void testSetUser_Invalid() {
-        UserModel user = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -170,7 +197,7 @@ class PostModelTest {
 
     @Test
     public void testBuilder() {
-        UserModel user = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        UserModel user = createValidUserModel("1", "cris6h16");
         PostModel post = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")
@@ -182,5 +209,14 @@ class PostModelTest {
         assertEquals("content", post.getContent());
         assertEquals(123456789L, post.getInstant());
         assertEquals(user, post.getUser());
+    }
+
+    private UserModel createValidUserModel(String id, String username) {
+        return new UserModel.Builder()
+                .setId(id)
+                .setUsername(username)
+                .setPosts(new HashSet<>())
+                .setFollowing(new HashSet<>())
+                .build();
     }
 }

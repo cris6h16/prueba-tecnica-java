@@ -2,6 +2,7 @@ package org.example.Application.Handlers;
 
 import org.example.Application.Commands.FindByUsernameCommand;
 import org.example.Application.DTOs.UserDTO;
+import org.example.Application.Exceptions.Impls.NullCommandException;
 import org.example.Application.Services.Interfaces.UserApplicationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,10 +42,15 @@ public class FindByUsernameCommandHandlerTest {
     }
 
     @Test
-    public void testHandle() {
+    public void handle() {
         when(userApplicationService.findByUsername("cris6h16")).thenReturn(userDTO);
         UserDTO result = findByUsernameCommandHandler.handle(findByUsernameCommand);
         verify(userApplicationService).findByUsername("cris6h16");
         assertEquals(userDTO, result);
+    }
+
+    @Test
+    public void handleWithNullCommand() {
+        assertThrows(NullCommandException.class, () -> findByUsernameCommandHandler.handle(null));
     }
 }

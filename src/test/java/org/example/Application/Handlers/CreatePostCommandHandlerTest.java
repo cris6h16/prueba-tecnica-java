@@ -2,6 +2,7 @@ package org.example.Application.Handlers;
 
 import org.example.Application.Commands.CreatePostCommand;
 import org.example.Application.DTOs.CreatePostDTO;
+import org.example.Application.Exceptions.Impls.NullCommandException;
 import org.example.Application.Services.Interfaces.PostApplicationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
 class CreatePostCommandHandlerTest {
@@ -38,6 +40,11 @@ class CreatePostCommandHandlerTest {
     public void handle() {
         createPostCommandHandler.handle(createPostCommand);
         verify(postApplicationService).create(createPostDTO);
+    }
+
+    @Test
+    public void handleWithNullCommand() {
+        assertThrows(NullCommandException.class, () -> createPostCommandHandler.handle(null));
     }
 }
 

@@ -14,6 +14,9 @@ public class UserDTO {
         this.following = builder.following;
     }
 
+    private UserDTO() {
+    }
+
     public String getId() {
         return id;
     }

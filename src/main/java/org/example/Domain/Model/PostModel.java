@@ -25,6 +25,7 @@ public class PostModel {
         this.setUser(user);
     }
 
+
     // Getters && Setters
 
     public String getId() {

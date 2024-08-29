@@ -11,12 +11,6 @@ import org.example.Application.Handlers.CreatePostCommandHandler;
 import org.example.Application.Handlers.FindByUsernameCommandHandler;
 import org.example.Application.Handlers.FindByUsernameFollowingEagerCommandHandler;
 import org.example.Application.Handlers.FollowUserCommandHandler;
-import org.example.Application.Services.Interfaces.PostApplicationService;
-import org.example.Application.Services.Interfaces.UserApplicationService;
-import org.example.Application.Services.PostApplicationServiceImpl;
-import org.example.Application.Services.UserApplicationServiceImpl;
-import org.example.Infrastructure.Adapter.Output.InMemoryPostRepository;
-import org.example.Infrastructure.Adapter.Output.InMemoryUserRepository;
 
 import java.util.Date;
 import java.util.Scanner;

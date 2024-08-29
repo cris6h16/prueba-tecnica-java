@@ -41,7 +41,13 @@ class PostApplicationServiceImplTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userModel = new UserModel("1", "cris6h16", new HashSet<>(), new HashSet<>());
+        userModel = new UserModel.Builder()
+                .setId("1")
+                .setUsername("cris6h16")
+                .setPosts(new HashSet<>())
+                .setFollowing(new HashSet<>())
+                .build();
+
         postModel = new PostModel.Builder()
                 .setId("1")
                 .setContent("content")

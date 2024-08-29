@@ -11,12 +11,15 @@ public class UserModel {
     private Set<PostModel> posts; // bidireccional
     private Set<UserModel> following;
 
-    // todo: impl builder
-    public UserModel(String id, String username, Set<PostModel> posts, Set<UserModel> following) {
+    private UserModel(String id, String username, Set<PostModel> posts, Set<UserModel> following) {
         this.setId(id);
         this.setUsername(username);
         this.setPosts(posts);
         this.setFollowing(following);
+    }
+
+    private UserModel(){
+
     }
 
 
@@ -78,5 +81,36 @@ public class UserModel {
 
         UserModel userModel = (UserModel) o;
         return id.equals(userModel.id);
+    }
+
+    public static class Builder{
+        private String id;
+        private String username;
+        private Set<PostModel> posts; // bidireccional
+        private Set<UserModel> following;
+
+        public Builder setId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder setPosts(Set<PostModel> posts) {
+            this.posts = posts;
+            return this;
+        }
+
+        public Builder setFollowing(Set<UserModel> following) {
+            this.following = following;
+            return this;
+        }
+
+        public UserModel build() {
+            return new UserModel(id, username, posts, following);
+        }
     }
 }

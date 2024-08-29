@@ -34,7 +34,13 @@ class UserApplicationServiceImplTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        userModel = new UserModel("1", "username", new HashSet<>(), new HashSet<>());
+        userModel =  new UserModel.Builder()
+                .setId("1")
+                .setUsername("cris6h16")
+                .setPosts(new HashSet<>())
+                .setFollowing(new HashSet<>())
+                .build();
+
         userDTO = new UserDTO.Builder()
                 .setId(userModel.getId())
                 .setUsername(userModel.getUsername())
@@ -63,7 +69,12 @@ class UserApplicationServiceImplTest {
 
     @Test
     public void Follow_AlreadyFollowing() {
-        UserModel followed = new UserModel("2", "followed", new HashSet<>(), new HashSet<>());
+        UserModel followed =  new UserModel.Builder()
+                .setId("2")
+                .setUsername("followed")
+                .setPosts(new HashSet<>())
+                .setFollowing(new HashSet<>())
+                .build();
         userModel.getFollowing().add(followed);
 
         when(userRepository.findByUsername("follower")).thenReturn(Optional.of(userModel));
