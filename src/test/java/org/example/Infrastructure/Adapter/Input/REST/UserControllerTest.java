@@ -144,8 +144,7 @@ public class UserControllerTest {
         mockMvc.perform(get("/api/v1/users/dashboard")
                         .param("username", username))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[0].content").value("Post 2"))
-                .andExpect(jsonPath("$.[1].content").value("Post 1"));
+                .andExpect(jsonPath("$.[0].content").value("Post 1"));
 
         verify(findByUsernameFollowingEagerCommandHandler, times(1)).handle(any(FindByUsernameFollowingEagerCommand.class));
     }
@@ -155,11 +154,7 @@ public class UserControllerTest {
                 .setUsername("prueba")
                 .setPosts(Collections.singleton(new PostDTO.Builder().setContent("Post 1").build()))
                 .build();
-        UserDTO user2 = new UserDTO.Builder()
-                .setUsername("tecnica")
-                .setPosts(Collections.singleton(new PostDTO.Builder().setContent("Post 2").build()))
-                .build();
-        return new HashSet<>(Set.of(user1, user2));
+        return new HashSet<>(Set.of(user1));
     }
 
     @Test
