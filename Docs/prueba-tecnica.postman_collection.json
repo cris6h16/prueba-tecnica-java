@@ -1,0 +1,124 @@
+{
+	"info": {
+		"_postman_id": "64106f1f-cf38-49e4-bfb9-68753fd2ab1d",
+		"name": "prueba-tecnica",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29096460"
+	},
+	"item": [
+		{
+			"name": "FOLLOW",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"followerUsername\": \"Alicia\",\r\n    \"followedUsername\": \"Alfonso\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/users/follow",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"follow"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POSTING",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"Alicia\",\r\n    \"content\": \"soy alicia 41\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/posts/create",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"posts",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DASHBOARD",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/users/dashboard?username=Alicia",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"dashboard"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "Alicia"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "WALL",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/users/wall?username=Alicia",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"wall"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "Alicia"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

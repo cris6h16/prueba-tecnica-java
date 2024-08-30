@@ -1,5 +1,8 @@
 # Prueba Tecnica Java - Back
 
+Este repositorio contiene la solución a la prueba técnica de Java...   
+solo contiene el back, el front por **consola** se encuentra en [otro repositorio](https://github.com/cris6h16/prueba-tecnica-java-front).
+
 ## Requerimientos Principales
 
 - Que sea Web API (Java)
@@ -21,7 +24,7 @@
 
 # Proyecto
 
-## Gerarquia final
+## Gerarquia final (Arquitectura Hexagonal)
 
 ```
 .
@@ -35,9 +38,6 @@
     │   │           │   ├── Model
     │   │           │   │   ├── UserModel.java
     │   │           │   │   └── PostModel.java
-    │   │           │   ├── Services
-    │   │           │   │   ├── PostDomainService.java
-    │   │           │   │   └── UserDomainService.java
     │   │           │   ├── Exceptions
     │   │           │   │   ├── AbstractDomainException.java
     │   │           │   │   └── Impls
@@ -137,4 +137,32 @@
                                     └── CustomExceptionHandlerTest.java
 ```
 
-![img.png](Docs/img.png)
+Uno de los principales requerimientos era que sea Web API, esto lo hago con Spring Boot...
+
+## Puntos Fuertes a Destacar
+1. **Arquitectura Hexagonal**
+2. **SOLID**
+3. Pruebas **Unitarias** con **100%** de **Cobertura**
+4. Exception Handling (Excepciones limitadas son las que se exponen)
+5. **Beans** de Spring son declarados en `Infrastucture`
+5. Etc
+
+
+## Workflow
+
+1. un `Adapter.INPUT` recibe la petición del cliente
+2. el `Adapter.INPUT` se crea un `Command` muy especifico dependiendo de la petición (dentro de los metodos)
+3. el `Adapter.INPUT` le pasa el `Command` creado a su respectivo `CommandHandler`
+4. el `CommandHandler` se encarga de llamar al `Service` de `/Application` correspondiente
+5. el `Service` de `/Application` se encarga de llamar a su respectivo `Repository` de `/Domain` (depemde de una abstracción (es una interfaz))
+6. el `Repository` llamado sera una implementación de un "puerto" o "interfaz de salida" que se encuentra en `/Domain`, esta implementación se encuentra en `/Infrastructure`
+
+PD:
+- `CommandHandler` es un wrapper de un caso de uso, es decir este llama a un metodo especifico de un `Service`
+- un `Service` de `Application` es un caso de uso, este tiene interaccion con los `Adapter.INPUT` atravez de `CommandHandler`, no directamente.
+
+**TODO**: Agregar diagrama de flujo
+
+## Testea la app [usando Postman](Docs/prueba-tecnica.postman_collection.json) !!
+![img.png](Docs/img.png)   
+
