@@ -3,6 +3,16 @@
 Este repositorio contiene la solución a la prueba técnica de Java...   
 solo contiene el back, el front por **consola** se encuentra en [otro repositorio](https://github.com/cris6h16/prueba-tecnica-java-front).
 
+<hr>
+
+[Planteamiento](#Requerimientos-Principales)   
+
+[Acerca del proyecto](#Proyecto)   
+
+[Ejecuta la app](#Ejecuta-la-app)
+
+<hr>
+
 ## Requerimientos Principales
 
 - Que sea Web API (Java)
@@ -142,11 +152,12 @@ Uno de los principales requerimientos era que sea Web API, esto lo hago con Spri
 ## Puntos Fuertes a Destacar
 1. **Arquitectura Hexagonal**
 2. **SOLID**
-3. Pruebas **Unitarias** con **100%** de **Cobertura**
+3. Pruebas **Unitarias** con **100%** de **Cobertura** ( +100 tests )
 4. Exception Handling (Excepciones limitadas son las que se exponen)
 5. **Beans** de Spring son declarados en `Infrastucture`
 5. Etc
 
+![img_1.png](Docs/img_1.png)   
 
 ## Workflow
 
@@ -162,6 +173,18 @@ PD:
 - un `Service` de `Application` es un caso de uso, este tiene interaccion con los `Adapter.INPUT` atravez de `CommandHandler`, no directamente.
 
 **TODO**: Agregar diagrama de flujo
+
+
+## Ejecuta la app
+
+1. Clone el repositorio
+2. Abre la ubicación del proyecto en tu terminal
+3. Ejecuta (puedes cambiar el puerto): 
+   - `mvn clean`
+   - `mvn package`
+    - `java -jar target/demo-1.0.jar --server.port=8000`
+- Ya tienes el back ejecutandose!!
+4. Ahora continuar con el [front (Consola)](https://github.com/cris6h16/prueba-tecnica-java-front)
 
 ## Testea la app [usando Postman](Docs/prueba-tecnica.postman_collection.json) !!
 ![img.png](Docs/img.png)   
