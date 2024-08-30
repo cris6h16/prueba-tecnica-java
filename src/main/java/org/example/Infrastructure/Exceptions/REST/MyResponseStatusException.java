@@ -1,9 +1,9 @@
 package org.example.Infrastructure.Exceptions.REST;
 
-import org.example.Infrastructure.Exceptions.InfrastructureException;
+import org.example.Infrastructure.Exceptions.AbstractInfrastructureException;
 import org.springframework.http.HttpStatus;
 
-public class MyResponseStatusException extends InfrastructureException {
+public class MyResponseStatusException extends AbstractInfrastructureException {
     private final HttpStatus status;
 
     public MyResponseStatusException(HttpStatus status, String response) {
