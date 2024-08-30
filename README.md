@@ -178,11 +178,8 @@ PD:
 ## Ejecuta la app
 
 1. Clone el repositorio
-2. Abre la ubicación del proyecto en tu terminal
-3. Ejecuta (puedes cambiar el puerto): 
-   - `mvn clean`
-   - `mvn package`
-    - `java -jar target/demo-1.0.jar --server.port=8000`
+2. Abrelo en un IDE
+3. Ejectua la clase `SpringBootMain.java` 
 - Ya tienes el back ejecutandose!!
 4. Ahora continuar con el [front (Consola)](https://github.com/cris6h16/prueba-tecnica-java-front)
 
